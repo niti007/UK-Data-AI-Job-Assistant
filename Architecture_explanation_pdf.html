@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chrome Extension Architecture Guide</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: white;
+        }
+        
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 20mm;
+            margin: 0 auto;
+            background: white;
+            page-break-after: always;
+            position: relative;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            margin: -20mm -20mm 30px -20mm;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 16px;
+            opacity: 0.95;
+        }
+        
+        h2 {
+            color: #667eea;
+            font-size: 24px;
+            margin: 30px 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        h3 {
+            color: #764ba2;
+            font-size: 18px;
+            margin: 20px 0 10px 0;
+        }
+        
+        .component {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .component-title {
+            font-size: 20px;
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .component-subtitle {
+            font-size: 14px;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+        
+        ul {
+            margin: 10px 0 10px 25px;
+        }
+        
+        li {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+        
+        strong {
+            color: #764ba2;
+        }
+        
+        .architecture-diagram {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 30px 0;
+            position: relative;
+        }
+        
+        .diagram-title {
+            text-align: center;
+            font-size: 20px;
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+        
+        .diagram-layer {
+            display: flex;
+            justify-content: space-around;
+            margin: 25px 0;
+            position: relative;
+        }
+        
+        .diagram-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 28%;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .diagram-box.yellow {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .diagram-box.green {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .diagram-box.orange {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+        
+        .diagram-box h4 {
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .diagram-box p {
+            font-size: 11px;
+            opacity: 0.9;
+        }
+        
+        .arrow {
+            text-align: center;
+            color: #667eea;
+            font-size: 24px;
+            margin: 10px 0;
+        }
+        
+        .flow-section {
+            background: #fff;
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .flow-title {
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .intro-section {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .key-features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .feature-box {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            padding: 15px;
+        }
+        
+        .feature-box h4 {
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+        
+        @media print {
+            body {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+            
+            .page {
+                page-break-after: always;
+            }
+        }
+        
+        .btn-download {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+        
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.3);
+        }
+        
+        @media print {
+            .btn-download {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="btn-download" onclick="window.print()">📄 Download PDF</button>
+    
+    <!-- Page 1: Introduction and Overview -->
+    <div class="page">
+        <div class="header">
+            <h1>Chrome Extension Architecture</h1>
+            <p>AI-Powered CV & Job Description Analysis Tool</p>
+        </div>
+        
+        <div class="intro-section">
+            <h2>Executive Summary</h2>
+            <p>This document provides a comprehensive technical overview of a Chrome browser extension designed to analyse job descriptions from LinkedIn and Indeed against user CVs using Google's Gemini AI. The extension operates as a sophisticated multi-component system that extracts, processes, and analyses recruitment data to provide actionable career guidance.</p>
+        </div>
+        
+        <h2>System Overview</h2>
+        <p>The extension comprises five core components working in concert to deliver seamless functionality:</p>
+        
+        <div class="key-features">
+            <div class="feature-box">
+                <h4>🎯 Manifest Configuration</h4>
+                <p>Defines extension identity, permissions, and component relationships</p>
+            </div>
+            <div class="feature-box">
+                <h4>💻 User Interface</h4>
+                <p>Provides intuitive interaction through popup.html and popup.css</p>
+            </div>
+            <div class="feature-box">
+                <h4>🔍 Content Extraction</h4>
+                <p>Intelligently scrapes job descriptions from career websites</p>
+            </div>
+            <div class="feature-box">
+                <h4>🎮 Controller Logic</h4>
+                <p>Manages user interactions and data flow coordination</p>
+            </div>
+        </div>
+        
+        <div class="architecture-diagram">
+            <div class="diagram-title">System Architecture Diagram</div>
+            
+            <div class="diagram-layer">
+                <div class="diagram-box">
+                    <h4>manifest.json</h4>
+                    <p>Configuration & Permissions</p>
+                </div>
+            </div>
+            
+            <div class="arrow">↓</div>
+            
+            <div class="diagram-layer">
+                <div class="diagram-box yellow">
+                    <h4>popup.html/css</h4>
+                    <p>User Interface</p>
+                </div>
+                <div class="diagram-box green">
+                    <h4>content_script.js</h4>
+                    <p>Page Content Extractor</p>
+                </div>
+                <div class="diagram-box orange">
+                    <h4>popup.js</h4>
+                    <p>UI Controller</p>
+                </div>
+            </div>
+            
+            <div class="arrow">↓</div>
+            
+            <div class="diagram-layer">
+                <div class="diagram-box">
+                    <h4>background.js</h4>
+                    <p>AI Integration Engine</p>
+                </div>
+            </div>
+            
+            <div class="arrow">↓</div>
+            
+            <div class="diagram-layer">
+                <div class="diagram-box green">
+                    <h4>Google Gemini AI</h4>
+                    <p>Analysis & Recommendations</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Page 2: Component Details Part 1 -->
+    <div class="page">
+        <h2 style="margin-top: 0;">Component Architecture: Detailed Analysis</h2>
+        
+        <div class="component">
+            <div class="component-title">1. manifest.json - The Identity Card</div>
+            <div class="component-subtitle">Configuration & Security Gateway</div>
+            
+            <p>The manifest file serves as the extension's constitutional document, defining its capabilities and constraints within the Chrome ecosystem.</p>
+            
+            <h3>Key Responsibilities:</h3>
+            <ul>
+                <li><strong>Permissions Management:</strong> Declares required capabilities:
+                    <ul>
+                        <li><code>storage</code> - Enables persistent storage of CV data and API credentials</li>
+                        <li><code>scripting</code> - Grants ability to inject and execute code on web pages</li>
+                    </ul>
+                </li>
+                <li><strong>Host Permissions:</strong> Implements security boundaries by restricting operation to:
+                    <ul>
+                        <li>LinkedIn job pages (*.linkedin.com/jobs/*)</li>
+                        <li>Indeed job listings (*.indeed.com/viewjob/*)</li>
+                    </ul>
+                </li>
+                <li><strong>Content Script Registration:</strong> Establishes automatic injection rules for content_script.js on target domains</li>
+                <li><strong>Extension Metadata:</strong> Defines name, version, description, and icon resources</li>
+            </ul>
+            
+            <div class="flow-section">
+                <div class="flow-title">Security Architecture:</div>
+                <p>The manifest implements a principle of least privilege, ensuring the extension can only access necessary resources and execute on explicitly approved domains, protecting user privacy and system integrity.</p>
+            </div>
+        </div>
+        
+        <div class="component">
+            <div class="component-title">2. popup.html & popup.css - The Interface</div>
+            <div class="component-subtitle">User Experience Layer</div>
+            
+            <p>These files construct the visual interface that users interact with when activating the extension.</p>
+            
+            <h3>popup.html - Structural Components:</h3>
+            <ul>
+                <li><strong>Input Fields:</strong>
+                    <ul>
+                        <li>Multi-line Job Description textarea (auto-populated)</li>
+                        <li>Multi-line CV textarea (persistent storage)</li>
+                    </ul>
+                </li>
+                <li><strong>Action Controls:</strong>
+                    <ul>
+                        <li>"Analyse" button - Triggers AI processing</li>
+                        <li>API Key configuration section with secure input</li>
+                        <li>"Save" button for credential persistence</li>
+                    </ul>
+                </li>
+                <li><strong>Results Display:</strong>
+                    <ul>
+                        <li>Hidden panel that reveals three analysis sections upon completion</li>
+                        <li>Missing Skills identification</li>
+                        <li>Suggested CV bullet points</li>
+                        <li>Cover letter opening paragraph</li>
+                    </ul>
+                </li>
+            </ul>
+            
+            <h3>popup.css - Visual Design Principles:</h3>
+            <ul>
+                <li><strong>Professional Aesthetics:</strong> Clean layout with blue accent colours (#4A90E2)</li>
+                <li><strong>Hierarchy:</strong> Clear visual structure with appropriate spacing and typography</li>
+                <li><strong>Responsiveness:</strong> Adapts to various popup window sizes</li>
+                <li><strong>Accessibility:</strong> Sufficient contrast ratios and readable font sizes</li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- Page 3: Component Details Part 2 -->
+    <div class="page">
+        <div class="component">
+            <div class="component-title">3. content_script.js - The Extractor</div>
+            <div class="component-subtitle">Intelligent Web Scraping Engine</div>
+            
+            <p>This script operates within the context of LinkedIn and Indeed pages, acting as an intelligent observer and extractor of job description content.</p>
+            
+            <h3>Core Functionality:</h3>
+            <ul>
+                <li><strong>DOM Element Targeting:</strong>
+                    <ul>
+                        <li>LinkedIn: Identifies <code>.jobs-description__content</code> containers</li>
+                        <li>Indeed: Locates job description elements within their page structure</li>
+                        <li>Employs fallback selectors for layout variations</li>
+                    </ul>
+                </li>
+                <li><strong>Dynamic Content Handling:</strong>
+                    <ul>
+                        <li>Implements MutationObserver API for real-time page monitoring</li>
+                        <li>Detects DOM changes when users navigate between jobs</li>
+                        <li>Automatically re-extracts content without page refresh</li>
+                    </ul>
+                </li>
+                <li><strong>Text Processing:</strong>
+                    <ul>
+                        <li>Strips HTML formatting while preserving structure</li>
+                        <li>Removes extraneous whitespace and normalises line breaks</li>
+                        <li>Handles edge cases (empty descriptions, loading states)</li>
+                    </ul>
+                </li>
+                <li><strong>Storage Integration:</strong>
+                    <ul>
+                        <li>Utilises Chrome Storage API for persistence</li>
+                        <li>Stores extracted text under <code>jobDescription</code> key</li>
+                        <li>Implements error handling for storage failures</li>
+                    </ul>
+                </li>
+            </ul>
+            
+            <div class="flow-section">
+                <div class="flow-title">Extraction Workflow:</div>
+                <p><strong>1. Page Load →</strong> Initial DOM scan for job description<br>
+                <strong>2. Content Found →</strong> Extract and clean text<br>
+                <strong>3. Store Data →</strong> Save to Chrome Storage<br>
+                <strong>4. Monitor →</strong> Watch for page changes<br>
+                <strong>5. Change Detected →</strong> Return to step 2</p>
+            </div>
+        </div>
+        
+        <div class="component">
+            <div class="component-title">4. popup.js - The Controller</div>
+            <div class="component-subtitle">User Interaction Orchestrator</div>
+            
+            <p>This script serves as the command centre, coordinating between the user interface, stored data, and background processing.</p>
+            
+            <h3>Primary Operations:</h3>
+            <ul>
+                <li><strong>Initialisation Sequence:</strong>
+                    <ul>
+                        <li>Loads saved CV from Chrome Storage on popup open</li>
+                        <li>Retrieves current job description extracted by content script</li>
+                        <li>Populates UI textareas with stored data</li>
+                        <li>Displays placeholder text if data unavailable</li>
+                    </ul>
+                </li>
+                <li><strong>API Key Management:</strong>
+                    <ul>
+                        <li>Captures user input for Gemini API key</li>
+                        <li>Validates format (basic checks)</li>
+                        <li>Stores securely in Chrome's sync storage</li>
+                        <li>Provides visual feedback on save success/failure</li>
+                    </ul>
+                </li>
+                <li><strong>Analysis Trigger:</strong>
+                    <ul>
+                        <li>Validates presence of job description, CV, and API key</li>
+                        <li>Displays loading indicator during processing</li>
+                        <li>Sends message to background script with all required data</li>
+                        <li>Handles response and updates UI with results</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- Page 4: Component Details Part 3 & Data Flow -->
+    <div class="page">
+        <div class="component">
+            <div class="component-title">5. background.js - The Brain</div>
+            <div class="component-subtitle">AI Integration & Processing Engine</div>
+            
+            <p>Operating as a service worker, this script handles complex AI interactions and response processing outside the visible UI context.</p>
+            
+            <h3>AI Integration Architecture:</h3>
+            <ul>
+                <li><strong>System Prompt Engineering:</strong>
+                    <ul>
+                        <li>Defines AI persona as "UK Careers Consultant"</li>
+                        <li>Specifies British English usage and professional tone</li>
+                        <li>Establishes ethical guidelines (no skill fabrication)</li>
+                        <li>Structures output format requirements</li>
+                    </ul>
+                </li>
+                <li><strong>API Communication:</strong>
+                    <ul>
+                        <li>Constructs POST request to Google Gemini endpoint</li>
+                        <li>Includes authentication headers with user API key</li>
+                        <li>Formats payload with job description and CV context</li>
+                        <li>Implements error handling for network failures</li>
+                    </ul>
+                </li>
+                <li><strong>Response Processing:</strong>
+                    <ul>
+                        <li>Parses JSON response from Gemini API</li>
+                        <li>Extracts three distinct sections using delimiter markers</li>
+                        <li>Cleans formatting artefacts from AI output</li>
+                        <li>Structures data for popup display</li>
+                    </ul>
+                </li>
+                <li><strong>Message Handling:</strong>
+                    <ul>
+                        <li>Listens for "analyseCV" messages from popup</li>
+                        <li>Sends processed results back to requesting tab</li>
+                        <li>Implements timeout mechanisms for long-running requests</li>
+                    </ul>
+                </li>
+            </ul>
+            
+            <div class="flow-section">
+                <div class="flow-title">AI Processing Pipeline:</div>
+                <p><strong>1. Receive Request →</strong> Get JD, CV, API Key from popup<br>
+                <strong>2. Build Prompt →</strong> Combine system instructions with user data<br>
+                <strong>3. API Call →</strong> Send to Gemini with authentication<br>
+                <strong>4. Parse Response →</strong> Extract and structure sections<br>
+                <strong>5. Return Results →</strong> Send formatted data to popup</p>
+            </div>
+        </div>
+        
+        <h2>Data Flow Architecture</h2>
+        
+        <div class="flow-section">
+            <div class="flow-title">Complete System Flow:</div>
+            <p><strong>Stage 1: Content Extraction</strong><br>
+            User navigates to job → content_script.js extracts description → Stores in Chrome Storage</p>
+            
+            <p><strong>Stage 2: User Interaction</strong><br>
+            User opens popup → popup.js loads stored data → User reviews/edits CV → Clicks "Analyse"</p>
+            
+            <p><strong>Stage 3: AI Processing</strong><br>
+            popup.js sends message → background.js receives data → Constructs AI prompt → Calls Gemini API</p>
+            
+            <p><strong>Stage 4: Results Display</strong><br>
+            Gemini returns analysis → background.js parses response → Sends to popup.js → Updates UI with results</p>
+        </div>
+        
+        <h2>Security Considerations</h2>
+        <ul>
+            <li><strong>API Key Storage:</strong> Stored in Chrome's secure sync storage, never in plain text in code</li>
+            <li><strong>Domain Restrictions:</strong> Content scripts only execute on approved job sites</li>
+            <li><strong>Data Privacy:</strong> All processing occurs client-side; no data sent to third parties except Gemini</li>
+            <li><strong>HTTPS Enforcement:</strong> API calls exclusively use encrypted connections</li>
+        </ul>
+        
+        <h2>Conclusion</h2>
+        <p>This Chrome extension demonstrates sophisticated architecture through its modular design, separating concerns across five specialised components. The system exemplifies modern web extension development with intelligent content extraction, secure credential management, and seamless AI integration, all whilst maintaining user privacy and security best practices.</p>
+    </div>
+</body>
+</html>
