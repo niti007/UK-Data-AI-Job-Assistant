@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body style="width: 450px; padding: 15px; font-family: sans-serif;">
+  <h3>🇬🇧 UK Job Assistant</h3>
+  <textarea id="jobDescription" placeholder="Job Description..." rows="5" style="width:100%"></textarea>
+  <textarea id="cvText" placeholder="Your CV..." rows="5" style="width:100%; margin-top:10px;"></textarea>
+  <button id="analyseBtn" style="margin-top:10px; width:100%; padding:10px; font-weight: bold; cursor:pointer;">✨ Analyse & Generate</button>
+  
+  <div id="loadingState" style="display:none; color: blue; margin-top: 10px;">Processing with AI...</div>
+  
+  <div id="resultsContainer" style="display:none; margin-top:15px;">
+    <h4>Skills</h4><div id="missingSkills"></div>
+    <h4>Bullets</h4><div id="bulletPoints"></div>
+    <h4>Cover Note</h4><div id="coverNote"></div>
+  </div>
+
+  <hr style="margin-top: 20px; border: 0; border-top: 1px solid #eee;">
+  <div style="background: #f0f4f8; padding: 10px; border-radius: 5px; margin-top: 10px;">
+    <label style="font-size: 11px; font-weight: bold; color: #555;">⚙️ API SETTINGS</label>
+    <div style="display: flex; gap: 5px; margin-top: 5px;">
+      <input type="password" id="apiKeyInput" placeholder="Enter Gemini API Key" style="flex: 1; font-size: 12px; padding: 5px;">
+      <button id="saveKeyBtn" style="cursor:pointer; padding: 5px 10px; font-size: 11px;">Save</button>
+    </div>
+    <p style="font-size: 10px; color: #777; margin-top: 5px;">
+      Get a free key at <a href="https://aistudio.google.com/" target="_blank">Google AI Studio</a>
+    </p>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+body { background: #f9f9f9; color: #333; }
+textarea { border: 1px solid #ccc; border-radius: 4px; padding: 8px; box-sizing: border-box; }
+button { background: #1a73e8; color: white; border: none; border-radius: 4px; font-weight: bold; }
+h4 { margin-bottom: 5px; color: #1a73e8; border-bottom: 1px solid #eee; }
+div { font-size: 13px; line-height: 1.4; margin-bottom: 10px; white-space: pre-wrap; }
