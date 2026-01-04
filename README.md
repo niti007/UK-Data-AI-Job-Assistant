@@ -1,68 +1,62 @@
-🇬🇧 UK Data & AI Job Assistant
-An intelligent Chrome Extension designed to help Data & AI professionals navigate the UK job market. It automatically extracts job descriptions from LinkedIn and Indeed, performs a gap analysis against your CV, and generates tailored, UK-style application content.
+# 🇬🇧 UK Data & AI Job Assistant
 
-✨ Features
-Automatic Extraction: Scrapes job descriptions directly from LinkedIn and Indeed (UK & US) using dynamic selectors.
+An intelligent Chrome Extension designed specifically for Data & AI professionals in the UK market. This tool automates the tedious parts of job applications by extracting job details and using AI to align your experience with recruiter expectations.
 
-Gap Analysis: Identifies top missing keywords and suggests how to frame transferable skills without hallucinations.
+---
 
-UK-Tailored CV Bullets: Generates achievement-focused bullets using British English (e.g., optimise, realise).
+## ✨ Features
 
-Professional Cover Notes: Creates concise, 3-paragraph cover letters focused on technical evidence and cultural fit.
+* **Smart Extraction**: Automatically pulls job descriptions from LinkedIn and Indeed using custom selectors.
+* **Gap Analysis**: Identifies the top 5 missing keywords from the JD and suggests how to frame transferable skills.
+* **Achievement-Focused Bullets**: Generates CV points using the `[Action Verb] + [Task] + [Result]` formula.
+* **UK-Style Cover Notes**: Drafts professional, non-salesy cover letters using British English (e.g., *optimise*, *analysing*).
+* **Privacy-Centric**: Your CV and API Key are stored locally on your machine via `chrome.storage`.
 
-Privacy First: Your CV and API key are stored locally in your browser, not on external servers.
+---
 
-🛠️ Installation (Developer Mode)
-Since this extension is in development, follow these steps to install it manually:
+## 🛠️ Installation (Developer Mode)
 
-1. Prepare the Files
-Download or create a folder named uk-job-assistant and include the following files from this repository:
+Since this extension is not currently on the Chrome Web Store, you can install it manually:
 
-manifest.json
+### 1. Organize Your Files
+Ensure the following files are saved together in a single folder named `uk-job-assistant`:
 
-content_script.js
+* `manifest.json`
+* `content_script.js`
+* `background.js`
+* `popup.html`
+* `popup.js`
+* `popup.css`
 
-background.js
+### 2. Load the Extension
+1.  Open Google Chrome and go to `chrome://extensions/`.
+2.  In the top right, toggle **Developer mode** to **ON**.
+3.  Click the **Load unpacked** button that appears.
+4.  Select your `uk-job-assistant` folder.
 
-popup.html
+---
 
-popup.js
+## 🔑 Setup & Configuration
 
-popup.css
+This extension requires a **Gemini API Key** to perform the analysis.
 
-2. Load into Chrome
-Open Chrome and navigate to chrome://extensions/.
+1.  **Get a Key**: Obtain a free API key from [Google AI Studio](https://aistudio.google.com/).
+2.  **Save the Key**: 
+    * Click the **Puzzle Piece** icon in Chrome and pin the **UK Job Assistant**.
+    * Open the extension, paste your key into the **API Settings** box, and click **Save**.
 
-Enable Developer mode using the toggle in the top right corner.
+---
 
-Click Load unpacked in the top left.
+## 🚀 How to Use
 
-Select your uk-job-assistant folder.
+1.  **Navigate**: Open a job posting on LinkedIn or Indeed.
+2.  **Open**: Click the extension icon. The job description should be automatically filled in.
+3.  **Paste CV**: Input your current CV text (this is saved locally so you only have to do it once).
+4.  **Analyse**: Click **✨ Analyse & Generate**.
+5.  **Apply**: Review the gap analysis and copy the tailored content into your application.
 
-🔑 Setup
-This extension uses the Gemini 1.5 Flash model to process data.
+---
 
-Get an API Key: Visit Google AI Studio and generate a free API key.
+## ⚖️ Disclaimer
 
-Configure the Extension: Click the extension icon in your toolbar, paste your key into the API Settings section, and click Save.
-
-🚀 How to Use
-Browse Jobs: Open a job posting on LinkedIn or Indeed.
-
-Open Assistant: Click the extension icon. The job description will be automatically populated.
-
-Input CV: Paste your current CV text into the "Your CV" box (it will be saved for future use).
-
-Generate: Click ✨ Analyse & Generate.
-
-Review: Receive your gap analysis, suggested bullets, and a tailored cover note instantly.
-
-📝 Technical Details
-Manifest V3: Built using the latest Chrome extension standards.
-
-Permissions: Uses activeTab, scripting, and storage to interact with job sites and save your preferences securely.
-
-AI Engine: Integrates with the Google Generative Language API (gemini-1.5-flash).
-
-⚖️ Disclaimer
 This tool is a careers consultant assistant. Always review and verify AI-generated content before submitting job applications to ensure accuracy and personal authenticity.
