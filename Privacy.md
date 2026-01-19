@@ -37,4 +37,4 @@ Since all data is stored locally in your browser, you have full control over it.
 2.  Removing the extension via `chrome://extensions`.
 
 ## 7. Contact
-If you have any questions or suggestions regarding this Privacy Policy, please contact us via [Your GitHub Profile Link or Email].
+If you have any questions or suggestions regarding this Privacy Policy, please contact us via nitishgalat7@gmail.com.
